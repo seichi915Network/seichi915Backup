@@ -99,7 +99,13 @@ fn add_files(zip_writer: &mut zip::ZipWriter<fs::File>, directory: String) {
             let filename = path.file_name().unwrap().to_os_string().into_string().unwrap();
             let filepath = path.into_os_string().into_string().unwrap();
             println!("バックアップ中: {}", &filepath);
-            let mut src = fs::File::open(filepath).unwrap();
+            let mut src = match fs::File::open(&filepath) {
+                Err(_) => {
+                    println!("エラー: {}", &filepath);
+                    continue;
+                },
+                Ok(file) => file
+            };
             zip_writer.start_file(filename, zip::write::FileOptions::default()).unwrap();
             io::copy(&mut src, zip_writer).unwrap();
         }
@@ -115,7 +121,13 @@ fn add_directory(zip_writer: &mut zip::ZipWriter<fs::File>, dir_name: String, di
             let filename = path.file_name().unwrap().to_os_string().into_string().unwrap();
             let filepath = path.into_os_string().into_string().unwrap();
             println!("バックアップ中: {}", &filepath);
-            let mut src = fs::File::open(filepath).unwrap();
+            let mut src = match fs::File::open(&filepath) {
+                Err(_) => {
+                    println!("エラー: {}", &filepath);
+                    continue;
+                },
+                Ok(file) => file
+            };
             zip_writer.start_file(format!("{}/{}", dir_name, filename), zip::write::FileOptions::default()).unwrap();
             io::copy(&mut src, zip_writer).unwrap();
         }
