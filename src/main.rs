@@ -111,7 +111,9 @@ fn add_directory(zip_writer: &mut zip::ZipWriter<fs::File>, dir_name: String, di
             add_directory(zip_writer, format!("{}/{}", dir_name, path.file_name().unwrap().to_os_string().into_string().unwrap()), path.into_os_string().into_string().unwrap());
         } else {
             let filename = path.file_name().unwrap().to_os_string().into_string().unwrap();
-            let mut src = fs::File::open(path.into_os_string().into_string().unwrap()).unwrap();
+            let filepath = path.into_os_string().into_string().unwrap();
+            println!("バックアップ中: {}", &filepath);
+            let mut src = fs::File::open(filepath).unwrap();
             zip_writer.start_file(format!("{}/{}", dir_name, filename), zip::write::FileOptions::default()).unwrap();
             io::copy(&mut src, zip_writer).unwrap();
         }
