@@ -1,8 +1,6 @@
-extern crate regex;
-
 use std::env;
-use std::path::Path;
-use regex::Regex;
+use std::path;
+use regex;
 use std::fs;
 use chrono;
 use zip;
@@ -24,22 +22,22 @@ fn main() {
     let str_vec: Vec<&str> = args.iter().map(|s| s as &str).collect::<Vec<&str>>();
     str_vec.iter().for_each(|arg| {
         match arg {
-            str if Regex::new(r"--target=\S+").unwrap().is_match(str) => {
+            str if regex::Regex::new(r"--target=\S+").unwrap().is_match(str) => {
                 let replaced: String = str.replacen("--target=", "", 1);
                 let mut setter = |str| backup_target_path = Some(str);
                 setter(replaced);
             },
-            str if Regex::new(r"-t=\S+").unwrap().is_match(str) => {
+            str if regex::Regex::new(r"-t=\S+").unwrap().is_match(str) => {
                 let replaced: String = str.replacen("-t=", "", 1);
                 let mut setter = |str| backup_target_path = Some(str);
                 setter(replaced);
             },
-            str if Regex::new(r"--destination=\S+").unwrap().is_match(str) => {
+            str if regex::Regex::new(r"--destination=\S+").unwrap().is_match(str) => {
                 let replaced: String = str.replacen("--destination=", "", 1);
                 let mut setter = |str| backup_destination_path = Some(str);
                 setter(replaced);
             },
-            str if Regex::new(r"-d=\S+").unwrap().is_match(str) => {
+            str if regex::Regex::new(r"-d=\S+").unwrap().is_match(str) => {
                 let replaced: String = str.replacen("-d=", "", 1);
                 let mut setter = |str| backup_destination_path = Some(str);
                 setter(replaced);
@@ -60,10 +58,10 @@ fn main() {
     }
     let unwrapped_backup_target_path = backup_target_path.unwrap();
     let unwrapped_backup_destination_path = backup_destination_path.unwrap();
-    if !Path::new(&unwrapped_backup_target_path).exists() || !Path::new(&unwrapped_backup_target_path).is_dir() {
+    if !path::Path::new(&unwrapped_backup_target_path).exists() || !path::Path::new(&unwrapped_backup_target_path).is_dir() {
         println!("バックアップ対象 {} は存在しないか、ディレクトリではありません。", unwrapped_backup_target_path);
     }
-    if !Path::new(&unwrapped_backup_destination_path).exists() || !Path::new(&unwrapped_backup_destination_path).is_dir() {
+    if !path::Path::new(&unwrapped_backup_destination_path).exists() || !path::Path::new(&unwrapped_backup_destination_path).is_dir() {
         match fs::create_dir_all(&unwrapped_backup_destination_path) {
             Err(why) => panic!("バックアップ先のディレクトリを作成できませんでした: {}", why),
             Ok(_) => {}
