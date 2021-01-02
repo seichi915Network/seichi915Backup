@@ -1,2 +1,2 @@
 # seichi915Backup
-seichi915Networkのフルバックアップをとるやつ
+seichi915Networkのバックアップをとるやつ
